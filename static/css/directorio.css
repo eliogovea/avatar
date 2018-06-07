@@ -1,0 +1,154 @@
+body{
+    color: #777;
+}
+
+/* nav */
+.navbar-default{
+    border-color: #fff;
+    background-image: linear-gradient(to bottom,#fff 0,#fff 100%);
+    opacity: 0.90;
+    box-shadow: none !important;
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form
+{
+    border-bottom: solid 1px #777;
+}
+
+.navbar-default .navbar-nav>li>a:hover{
+    color: rgb(174, 211, 88);
+}
+/* end nav */
+
+.footer-style, .row-search, .header-table{
+    /*background-color: #589AD3;*/
+    background-color: #01853c;
+}
+
+.footer-style > .container, .header-text{
+    color: #f1f7e2;
+}
+
+#wrap > header > .container, .container-margin-up{
+    padding: 75px 10px 10px;
+}
+
+/*
+#search{
+    top: 0px;
+    position: fixed;
+    padding: 75px 10px 10px;
+}
+*/
+
+.text-banner-h1{
+    font-size: 45px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    /*color: #589AD3;*/
+    color: #5dba27;
+}
+
+.text-banner-h4{
+    font: italic 22px Georgia,"Times New Roman",Times,serif;
+    color: #8A8985;
+}
+
+.wrapper{
+    min-height: 568px;
+}
+
+.row{
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+div > .direcctorio-name{
+    margin: 30px 0px 10px;
+    color:#f1f7e2;
+}
+
+#search_nombre{
+    margin: 20px 0px;
+    padding: 5px 5px !important;
+    font-size: 20px !important;
+
+}
+
+#search_nombre:focus{
+    border-color: rgb(176, 245, 66);
+}
+
+.area-text{
+    /*color: #589AD3;*/
+    color: #5dba27;
+}
+
+.container-result{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+table > tbody > tr > td > h5{
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.form-search{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.btn-add{
+    margin: 20px auto 10px;
+}
+
+div > .container-table{
+    margin: 20px auto;
+}
+
+a {
+    color: #f0f0f0;
+    text-decoration: none;
+}
+
+a:focus, a:hover {
+    color: #f0f0f0;
+    text-decoration: none;
+}
+
+a.search_to_inicio{
+    color: #9A6AAC !important;
+}
+
+.table>tbody>tr>td, 
+.table>tbody>tr>th, 
+.table>tfoot>tr>td, 
+.table>tfoot>tr>th, 
+.table>thead>tr>td, 
+.table>thead>tr>th{
+    padding: 2px;
+}
+
+.table>thead>tr.header-table>th{
+    border-bottom: none;
+}
+
+.table>tbody>tr>td{
+    font-size: 16px;
+}
+/*
+#containerResult {
+    background-color: #d4fd9f;
+}
+*/
+@media(max-width: 991px)
+{
+    div > .direcctorio-name {
+        display: none !important;
+    }
+
+    .item-separator {
+        display: none !important;
+    }
+}
