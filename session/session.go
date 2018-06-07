@@ -2,7 +2,7 @@ package session
 
 import (
 	"time"
-	"crypto/md5"
+	"crypto/sha1"
 	"encoding/hex"
 )
 
@@ -14,7 +14,7 @@ type session struct {
 }
 
 func newSessionId(username string) string {
-	h := md5.New()
+	h := sha1.New()
 	h.Write([]byte(username + time.Now().String()))
 	return hex.EncodeToString(h.Sum(nil))
 }
