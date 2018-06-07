@@ -13,7 +13,6 @@ func testWithLoad() {
 	}
 	s.buildHandlers()
 
-	s.router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.ListenAndServe(s.Address, s.router)
 }
 

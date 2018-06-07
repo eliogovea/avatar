@@ -21,6 +21,7 @@ type server struct {
 	LoginPath			string			`json:"login_path"` 		// /login
 	LogoutPath			string			`json:"logout_path"` 		// /logout
 	PersonalPath 		string			`json:"personal_path"` 		// /personal
+	UploadPath			string			`json:upload_path`			// /upload
 	LoginCookieName 	string			`json:"login_cookie_name"` 	// login-avatar
 	SessionDuration 	time.Duration 	`json:"session_duration"`	// time.Hour
 
@@ -68,6 +69,6 @@ func (s *server)buildHandlers() error {
 	s.router.HandleFunc(s.LogoutPath, s.loggedOnly(s.logoutHandler()))
 	s.router.HandleFunc(s.PersonalPath, s.loggedOnly(s.personalHandler(s.PersonalTemplate)))
 	s.router.HandleFunc("/api/approved/", s.getApprovedAvatar())
-	s.router.HandleFunc("/assets/)", s.assetsHandler())
+	s.router.Handle(s.StaticFiles, http.StripPrefix(s.StaticFiles, http.FileServer(http.Dir("static"))))
 	return nil
 }
