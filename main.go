@@ -2,12 +2,7 @@ package main
 
 import (
 	"net/http"
-	"time"
-	"os"
 	"log"
-
-	"github.com/eliogovea/avatar/auth"
-	"github.com/eliogovea/avatar/session"
 )
 
 func testWithLoad() {

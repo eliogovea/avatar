@@ -11,6 +11,7 @@ import (
 func (s *server)getApprovedAvatar() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
+			http.Error(w, "only get", http.StatusMethodNotAllowed)
 			// TODO
 			return
 		}
