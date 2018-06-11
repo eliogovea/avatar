@@ -34,6 +34,7 @@ func (fs *storage)copyFile(from io.Reader, path string) error {
 	contentType := http.DetectContentType(buffer)
 
 	ok := false
+	// TODO user a map
 	for _, v := range(fs.AllowedTypes) {
 		if v == contentType {
 			ok = true
