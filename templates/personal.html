@@ -11,7 +11,7 @@
             <div class="pull-right">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="/login/logout">Sair</a>
+                        <a href="/login/logout">Salir</a>
                     </li>
                 </ul>
             </div>
@@ -21,6 +21,9 @@
         <li>
             <img src="{{.ApprovedAvatar}}" width="320" height="320"/>
         </li>
+        {{if .HasPendingAvatar}}
+            <img src="{{.PendingAvatar}}" width="320" height="320">
+        {{end}}
     </div>
 
     <div class="continer" id="upload">

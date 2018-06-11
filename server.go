@@ -69,6 +69,8 @@ func (s *server)buildHandlers() error {
 	s.router.HandleFunc(s.LogoutPath, s.loggedOnly(s.logoutHandler()))
 	s.router.HandleFunc(s.PersonalPath, s.loggedOnly(s.personalHandler(s.PersonalTemplate)))
 	s.router.HandleFunc("/api/approved/", s.getApprovedAvatar())
+	s.router.HandleFunc("/api/pending/", s.loggedOnly(s.getPendingAvatar()))
+	s.router.HandleFunc("/upload", s.loggedOnly(s.uploadHandler()))
 	s.router.Handle(s.StaticFiles, http.StripPrefix(s.StaticFiles, http.FileServer(http.Dir("static"))))
 	return nil
 }

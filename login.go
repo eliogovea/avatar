@@ -9,7 +9,6 @@ import (
 
 func (s *server)loginHandler(tempAddr string) http.HandlerFunc {
 	t := template.Must(template.ParseFiles(tempAddr))
-	log.Println("building login handler")
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {	
 			t.Execute(w, nil)
@@ -30,8 +29,6 @@ func (s *server)loginHandler(tempAddr string) http.HandlerFunc {
 				log.Println("error creating session:", err)
 			}
 
-			log.Println("new session created: ", newId)
-
 			cookie := &http.Cookie {
 				Name: s.LoginCookieName,
 				Value: newId,
@@ -45,7 +42,7 @@ func (s *server)loginHandler(tempAddr string) http.HandlerFunc {
 			return
 		}
 
-		log.Println("authentication rejected: ", err)
+//		log.Println("authentication rejected: ", err)
 
 		// TODO show login again + report error
 		w.Header().Set("Location", s.LoginPath)

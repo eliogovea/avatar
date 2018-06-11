@@ -2,18 +2,16 @@ package main
 
 import (
 	"net/http"
-	"log"
+//	"log"
 	"time"
 )
 
 func (s *server)logoutHandler() http.HandlerFunc {
-	log.Println("building logout handler")
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie(s.LoginCookieName)
 		if err == nil {
 			id := cookie.Value
-			// session id exists because of the loggedOnly middleware
-			log.Println("deleting session: " + id)
+// 			log.Println("deleting session: " + id)
 			err = s.sessions.DeleteSession(id)
 			if err != nil {
 				// TODO report error
