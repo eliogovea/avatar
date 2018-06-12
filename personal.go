@@ -7,6 +7,7 @@ import (
 )
 
 type PersonalData struct {
+	IsManager         bool
 	HasApprovedAvatar bool
 	ApprovedAvatar    string
 	HasPendingAvatar  bool
@@ -21,15 +22,16 @@ func (s *server) getSessionId(r *http.Request) string {
 	return cookie.Value
 }
 
-func (s *server) personalHandler(tempAddr string) http.HandlerFunc {
-	t := template.Must(template.ParseFiles(tempAddr))
+func (s *server) personalHandler() http.HandlerFunc {
+	t := template.Must(template.ParseFiles(s.PersonalTemplate))
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO get username, and isManager from context variables
-		username, _ /*isManager*/, err := s.sessions.GetInfo(s.getSessionId(r))
+		username, isManager, err := s.sessions.GetInfo(s.getSessionId(r))
 		if err != nil {
 			log.Println("!!! error personalHandler !!!")
 		}
 		data := &PersonalData{
+			IsManager:         isManager,
 			HasApprovedAvatar: s.Fs.HasApproved(username),
 			ApprovedAvatar:    "/api/approved/" + username,
 

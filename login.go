@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-func (s *server) loginHandler(tempAddr string) http.HandlerFunc {
-	t := template.Must(template.ParseFiles(tempAddr))
+func (s *server) loginHandler() http.HandlerFunc {
+	t := template.Must(template.ParseFiles(s.LoginTemplate))
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			t.Execute(w, nil)

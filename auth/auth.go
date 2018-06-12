@@ -74,7 +74,7 @@ func (a *Auth) CheckUserAndPass(username, password string) (error, bool) {
 	if err != nil {
 		return err, false
 	}
-	isManager := false
+	isManager := true // !!!!!
 	// TODO
 
 	return nil, isManager

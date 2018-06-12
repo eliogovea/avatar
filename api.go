@@ -63,10 +63,51 @@ func (s *server) getPendingAvatar() http.HandlerFunc {
 		if err != nil {
 			log.Println("error get pending: ", err)
 			// TODO handle error
+			http.Error(w, err.Error(), 500)
 			return
 		}
 		defer file.Close()
 		w.Header().Set("Content-Type", "image/jpeg")
 		io.Copy(w, file)
+	}
+}
+
+// /api/admin/approve/{id}
+func (s *server) approvePending() http.HandlerFunc {
+	root := "/api/admin/approve/pending/"
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := r.URL.RequestURI()[len(root):]
+		err := s.Fs.approvePending(username)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		// TODO inform success
+	}
+}
+
+// /api/admin/deny/pending/{id}
+func (s *server) denyPending() http.HandlerFunc {
+	root := "/api/admin/deny/pending/"
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := r.URL.RequestURI()[len(root):]
+		err := s.Fs.denyPending(username)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+// /api/admin/deny/approved/{id}
+func (s *server) denyApproved() http.HandlerFunc {
+	root := "/api/admin/deny/approved/"
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := r.URL.RequestURI()[len(root):]
+		err := s.Fs.denyApproved(username)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		w.WriteHeader(http.StatusOK)
 	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 )
@@ -14,6 +15,7 @@ func (s *server) logoutHandler() http.HandlerFunc {
 			err = s.sessions.DeleteSession(id)
 			if err != nil {
 				// TODO report error
+				log.Println("could not delete the session")
 				panic(err)
 			}
 			expiredCookie := &http.Cookie{

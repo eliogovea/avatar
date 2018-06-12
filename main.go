@@ -11,8 +11,6 @@ func testWithLoad() {
 		log.Println("!!! error loading the configuration", err)
 		return
 	}
-	s.buildHandlers()
-
 	http.ListenAndServe(s.Address, s.router)
 }
 

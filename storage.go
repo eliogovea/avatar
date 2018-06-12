@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +17,56 @@ type storage struct {
 	PendingDirectory  string   `json:"pending_directory"`
 	MaxUploadSize     int32    `json:"max_upload_size"`
 	AllowedTypes      []string `json:"allowed_types"`
+
+	Approved map[string]bool
+	Pending  map[string]bool
+}
+
+func NewStorage(config string) *storage {
+	file, err := os.Open(config)
+	if err != nil {
+		log.Fatalf("can't open storage config")
+	}
+	fs := new(storage)
+	err = json.NewDecoder(file).Decode(fs)
+	if err != nil {
+		log.Fatalf("error reading storage config")
+	}
+
+	fs.Approved = make(map[string]bool)
+	fs.Pending = make(map[string]bool)
+
+	fs.loadAvatars()
+
+	return fs
+}
+
+func (fs *storage) loadAvatars() error {
+	fs.Approved = make(map[string]bool)
+	fs.Pending = make(map[string]bool)
+	files, err := ioutil.ReadDir(fs.ApprovedDirectory)
+	if err != nil {
+		return errors.New("can't read files on " + fs.ApprovedDirectory)
+	}
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		log.Println("approved", file.Name())
+		fs.Approved[file.Name()] = true
+	}
+	files, err = ioutil.ReadDir(fs.PendingDirectory)
+	if err != nil {
+		return errors.New("can't read files on " + fs.PendingDirectory)
+	}
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		log.Println("pending ", file.Name())
+		fs.Pending[file.Name()] = true
+	}
+	return nil
 }
 
 func (fs *storage) copyFile(from io.Reader, path string) error {
@@ -44,8 +97,6 @@ func (fs *storage) copyFile(from io.Reader, path string) error {
 		return err
 	}
 
-	log.Println(contentType, "OK")
-
 	var to *os.File
 	if err := fs.exists(path); err != nil {
 		to, err = os.Create(path)
@@ -63,24 +114,57 @@ func (fs *storage) copyFile(from io.Reader, path string) error {
 	return err
 }
 
-func (fs *storage) HasPending(username string) bool {
-	_, err := os.Stat(fs.PendingDirectory + "/" + username)
-	if err != nil {
-		return false
+func (fs *storage) approvePending(username string) error {
+	pendingPath := fs.PendingDirectory + "/" + username
+	approvedPath := fs.ApprovedDirectory + "/" + username
+
+	if fs.exists(pendingPath) != nil {
+		return errors.New("no pending avatar")
 	}
-	return true
+
+	err := os.Rename(pendingPath, approvedPath)
+
+	if err != nil {
+		fs.Approved[username] = true
+		delete(fs.Pending, username)
+	}
+
+	return err
+}
+
+func (fs *storage) denyPending(username string) error {
+	err := os.Remove(fs.PendingDirectory + "/" + username)
+	if err != nil {
+		delete(fs.Pending, username)
+	}
+	return err
+}
+
+func (fs *storage) denyApproved(username string) error {
+	err := os.Remove(fs.PendingDirectory + "/" + username)
+	if err != nil {
+		delete(fs.Approved, username)
+	}
+	return err
+}
+
+func (fs *storage) HasPending(username string) bool {
+	_, ok := fs.Pending[username]
+	return ok
 }
 
 func (fs *storage) HasApproved(username string) bool {
-	_, err := os.Stat(fs.ApprovedDirectory + "/" + username)
-	if err != nil {
-		return false
-	}
-	return true
+	_, ok := fs.Approved[username]
+	return ok
 }
 
 func (fs *storage) CreatePending(from io.Reader, username string) error {
-	return fs.copyFile(from, fs.PendingDirectory+"/"+username)
+	err := fs.copyFile(from, fs.PendingDirectory+"/"+username)
+	if err != nil {
+		fs.Pending[username] = true
+		log.Println("added pending", username)
+	}
+	return err
 }
 
 func (fs *storage) exists(fileName string) error {
@@ -89,38 +173,17 @@ func (fs *storage) exists(fileName string) error {
 }
 
 func (fs *storage) getPending(username string) string {
-	fileName := fs.PendingDirectory + "/" + username
-	if err := fs.exists(fileName); err != nil {
-		if !os.IsNotExist(err) {
-			log.Println("unknown error: ", err)
-		}
+	_, ok := fs.Pending[username]
+	if !ok {
 		return fs.DefaultAvatar
 	}
-	return fileName
+	return fs.PendingDirectory + "/" + username
 }
 
 func (fs *storage) getApproved(username string) string {
-	fileName := fs.ApprovedDirectory + "/" + username
-	if err := fs.exists(fileName); err != nil {
-		if !os.IsNotExist(err) {
-			log.Println("unknown error: ", err)
-		}
+	_, ok := fs.Approved[username]
+	if !ok {
 		return fs.DefaultAvatar
 	}
-	return fileName
-}
-
-func deletePending(username string) error {
-	// TODO
-	return nil
-}
-
-func deleteApproved(username string) error {
-	// TODO
-	return nil
-}
-
-func movePendignToApproved(username string) error {
-	// TODO
-	return nil
+	return fs.ApprovedDirectory + "/" + username
 }

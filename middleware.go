@@ -52,10 +52,15 @@ func (s *server) loggedOnly(f http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *server) managerOnly(f http.HandlerFunc) http.HandlerFunc {
-	// TODO  load facedetectio data, once
 	return func(w http.ResponseWriter, r *http.Request) {
-		f = s.loggedOnly(f)
-		// TODO
-		f(w, r)
+		ok, username, isManager := s.isLogged(r)
+		if !ok || !isManager {
+			w.Header().Set("Location", s.PersonalPath)
+			w.WriteHeader(http.StatusMovedPermanently)
+			return
+		}
+		ctx := context.WithValue(r.Context(), "username", username)
+		ctx = context.WithValue(ctx, "isManager", isManager)
+		f(w, r.WithContext(ctx))
 	}
 }
