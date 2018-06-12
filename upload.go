@@ -1,12 +1,11 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 )
 
-
-func (s *server)uploadHandler() http.HandlerFunc {
+func (s *server) uploadHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		log.Println("upload file")
@@ -21,7 +20,6 @@ func (s *server)uploadHandler() http.HandlerFunc {
 			return
 		}
 
-
 		r.Body = http.MaxBytesReader(w, r.Body, int64(s.MaxUploadSize))
 
 		username := r.Context().Value("username").(string)
@@ -33,7 +31,7 @@ func (s *server)uploadHandler() http.HandlerFunc {
 			log.Println("error reading uploaded file: ", err)
 			// http.Error(w, "error reading file", /* TODO */)
 		}
-		
+
 		err = s.Fs.CreatePending(file, username)
 
 		if err != nil {

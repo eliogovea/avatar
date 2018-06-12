@@ -2,12 +2,12 @@ package main
 
 import (
 	"io"
-	"os"
-	"net/http"
 	"log"
+	"net/http"
+	"os"
 )
 
-func (s *server)getDefaultAvatar() http.HandlerFunc {
+func (s *server) getDefaultAvatar() http.HandlerFunc {
 	file, err := os.Open(s.Fs.DefaultAvatar)
 	if err != nil {
 		log.Panic(err)
@@ -19,7 +19,7 @@ func (s *server)getDefaultAvatar() http.HandlerFunc {
 }
 
 // /api/approved/{id}
-func (s *server)getApprovedAvatar() http.HandlerFunc {
+func (s *server) getApprovedAvatar() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "only get", http.StatusMethodNotAllowed)
@@ -32,7 +32,7 @@ func (s *server)getApprovedAvatar() http.HandlerFunc {
 		if err != nil {
 			log.Println("error get approved: ", err)
 			// error
-			return 
+			return
 		}
 		defer file.Close()
 		w.Header().Set("Content-Type", "image/jpeg")
@@ -41,7 +41,7 @@ func (s *server)getApprovedAvatar() http.HandlerFunc {
 }
 
 // /api/pending/{id}
-func (s *server)getPendingAvatar() http.HandlerFunc {
+func (s *server) getPendingAvatar() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		username := r.Context().Value("username").(string)
 		isManager := r.Context().Value("isManager").(bool)
@@ -63,7 +63,7 @@ func (s *server)getPendingAvatar() http.HandlerFunc {
 		if err != nil {
 			log.Println("error get pending: ", err)
 			// TODO handle error
-			return 
+			return
 		}
 		defer file.Close()
 		w.Header().Set("Content-Type", "image/jpeg")

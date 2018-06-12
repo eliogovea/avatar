@@ -1,9 +1,10 @@
 package auth
 
 import (
-	"net/http"
-	"errors"
 	"crypto/tls"
+	"errors"
+	"net/http"
+
 	"gopkg.in/ldap.v2"
 )
 
@@ -11,9 +12,9 @@ var EmptyUsername = errors.New("Empty username")
 var EmptyPassword = errors.New("Empty password")
 
 type Auth struct {
-	Address 	string	`json:"address"` 		// IP:636
-	Domain 		string	`json:"domain"` 		// @...
-	AdminsGroup string	`json:"admins_group"`
+	Address     string `json:"address"` // IP:636
+	Domain      string `json:"domain"`  // @...
+	AdminsGroup string `json:"admins_group"`
 }
 
 func New() *Auth {
@@ -28,7 +29,7 @@ func New() *Auth {
 //	}
 //}
 
-func (a *Auth)GetUsername(r *http.Request) (string, error) {
+func (a *Auth) GetUsername(r *http.Request) (string, error) {
 	err := r.ParseForm()
 	if err != nil {
 		return "", err
@@ -40,7 +41,7 @@ func (a *Auth)GetUsername(r *http.Request) (string, error) {
 	return username, nil
 }
 
-func (a *Auth)GetPassword(r *http.Request) (string, error) {
+func (a *Auth) GetPassword(r *http.Request) (string, error) {
 	err := r.ParseForm()
 	if err != nil {
 		return "", err
@@ -52,7 +53,7 @@ func (a *Auth)GetPassword(r *http.Request) (string, error) {
 	return password, nil
 }
 
-func (a *Auth)CheckUserAndPass(username, password string) (error, bool) {
+func (a *Auth) CheckUserAndPass(username, password string) (error, bool) {
 	if username == "" {
 		return EmptyUsername, false
 	}
@@ -62,14 +63,14 @@ func (a *Auth)CheckUserAndPass(username, password string) (error, bool) {
 	conn, err := ldap.DialTLS(
 		"tcp",
 		a.Address,
-		&tls.Config {
+		&tls.Config{
 			InsecureSkipVerify: true,
 		},
 	)
 	if err != nil {
 		return err, false
 	}
-	err = conn.Bind(username + a.Domain, password)
+	err = conn.Bind(username+a.Domain, password)
 	if err != nil {
 		return err, false
 	}

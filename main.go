@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 )
 
 func testWithLoad() {
@@ -20,4 +20,3 @@ func main() {
 	// test()
 	testWithLoad()
 }
-

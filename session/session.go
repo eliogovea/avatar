@@ -1,16 +1,16 @@
 package session
 
 import (
-	"time"
 	"crypto/sha1"
 	"encoding/hex"
+	"time"
 )
 
 type session struct {
-	id		string
-	username 	string
-	isManager	bool
-	expire		time.Time
+	id        string
+	username  string
+	isManager bool
+	expire    time.Time
 }
 
 func newSessionId(username string) string {
@@ -21,10 +21,10 @@ func newSessionId(username string) string {
 
 func newSession(username string, isManager bool) *session {
 	id := newSessionId(username)
-	return &session {
-		id: id,
-		username: username,
+	return &session{
+		id:        id,
+		username:  username,
 		isManager: isManager,
-		expire: time.Now().Add(time.Hour),
+		expire:    time.Now().Add(time.Hour),
 	}
 }

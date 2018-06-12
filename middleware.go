@@ -1,12 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
-	"context"
 )
 
-func (s *server)isLogged(r *http.Request) (bool, string, bool) {
+func (s *server) isLogged(r *http.Request) (bool, string, bool) {
 	cookie, err := r.Cookie(s.LoginCookieName)
 	if err != nil {
 		return false, "", false
@@ -25,8 +25,7 @@ func (s *server)isLogged(r *http.Request) (bool, string, bool) {
 	return true, username, isManager
 }
 
-
-func (s *server)notLoggedOnly(f http.HandlerFunc) http.HandlerFunc {
+func (s *server) notLoggedOnly(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ok, _, _ := s.isLogged(r)
 		if ok {
@@ -38,7 +37,7 @@ func (s *server)notLoggedOnly(f http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func (s *server)loggedOnly(f http.HandlerFunc) http.HandlerFunc {
+func (s *server) loggedOnly(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ok, username, isManager := s.isLogged(r)
 		if !ok {
@@ -52,8 +51,7 @@ func (s *server)loggedOnly(f http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-
-func (s *server)managerOnly(f http.HandlerFunc) http.HandlerFunc {
+func (s *server) managerOnly(f http.HandlerFunc) http.HandlerFunc {
 	// TODO  load facedetectio data, once
 	return func(w http.ResponseWriter, r *http.Request) {
 		f = s.loggedOnly(f)

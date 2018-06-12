@@ -1,16 +1,16 @@
 package main
 
 import (
-	"net/http"
-	"log"
 	"html/template"
+	"log"
+	"net/http"
 	"time"
 )
 
-func (s *server)loginHandler(tempAddr string) http.HandlerFunc {
+func (s *server) loginHandler(tempAddr string) http.HandlerFunc {
 	t := template.Must(template.ParseFiles(tempAddr))
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet {	
+		if r.Method == http.MethodGet {
 			t.Execute(w, nil)
 			return
 		}
@@ -29,9 +29,9 @@ func (s *server)loginHandler(tempAddr string) http.HandlerFunc {
 				log.Println("error creating session:", err)
 			}
 
-			cookie := &http.Cookie {
-				Name: s.LoginCookieName,
-				Value: newId,
+			cookie := &http.Cookie{
+				Name:    s.LoginCookieName,
+				Value:   newId,
 				Expires: time.Now().Add(s.SessionDuration),
 			}
 
@@ -42,7 +42,7 @@ func (s *server)loginHandler(tempAddr string) http.HandlerFunc {
 			return
 		}
 
-//		log.Println("authentication rejected: ", err)
+		//		log.Println("authentication rejected: ", err)
 
 		// TODO show login again + report error
 		w.Header().Set("Location", s.LoginPath)
