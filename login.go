@@ -23,10 +23,12 @@ func (s *server) loginHandler(tempAddr string) http.HandlerFunc {
 		if err == nil {
 			log.Println("authentication accepted " + username)
 
-			newId, err := s.sessions.AddSession(username, isManager) // TODO handle error
+			newId, err := s.sessions.AddSession(username, isManager)
 
 			if err != nil {
-				log.Println("error creating session:", err)
+				log.Println("error creating session for :", username, err)
+				http.Error(w, "login error", http.StatusConflict)
+				return
 			}
 
 			cookie := &http.Cookie{
