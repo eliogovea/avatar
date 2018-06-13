@@ -12,22 +12,15 @@ var EmptyUsername = errors.New("Empty username")
 var EmptyPassword = errors.New("Empty password")
 
 type Auth struct {
-	Address     string `json:"address"` // IP:636
-	Domain      string `json:"domain"`  // @...
-	AdminsGroup string `json:"admins_group"`
+	Address     string   `json:"address"` // IP:636
+	Domain      string   `json:"domain"`  // @...
+	AdminsGroup string   `json:"admins_group"`
+	Admins      []string `json:"admins"`
 }
 
 func New() *Auth {
 	return new(Auth)
 }
-
-//func New(address, domain, adminsGroup string) *auth {
-//	return &auth {
-//		Address: address,
-//		Domain: domain,
-//		AdminsGroup: adminsGroup,
-//	}
-//}
 
 func (a *Auth) GetUsername(r *http.Request) (string, error) {
 	err := r.ParseForm()
@@ -74,8 +67,14 @@ func (a *Auth) CheckUserAndPass(username, password string) (error, bool) {
 	if err != nil {
 		return err, false
 	}
-	isManager := true // !!!!!
-	// TODO
+
+	// TODO use a map
+	isManager := false
+	for _, admin := range a.Admins {
+		if username == admin {
+			isManager = true
+		}
+	}
 
 	return nil, isManager
 }
