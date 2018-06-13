@@ -16,6 +16,7 @@ func (s *server) uploadHandler() http.HandlerFunc {
 		}
 
 		if r.ContentLength > int64(s.MaxUploadSize) {
+			log.Println(r.ContentLength, s.MaxUploadSize, s.Fs.MaxUploadSize)
 			http.Error(w, "request too large", http.StatusExpectationFailed)
 			return
 		}

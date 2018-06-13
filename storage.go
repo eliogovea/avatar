@@ -52,7 +52,7 @@ func (fs *storage) loadAvatars() error {
 		if file.IsDir() {
 			continue
 		}
-		log.Println("approved", file.Name())
+		// log.Println("approved", file.Name())
 		fs.Approved[file.Name()] = true
 	}
 	files, err = ioutil.ReadDir(fs.PendingDirectory)
@@ -63,7 +63,7 @@ func (fs *storage) loadAvatars() error {
 		if file.IsDir() {
 			continue
 		}
-		log.Println("pending ", file.Name())
+		// log.Println("pending ", file.Name())
 		fs.Pending[file.Name()] = true
 	}
 	return nil
@@ -118,7 +118,7 @@ func (fs *storage) approvePending(username string) error {
 	pendingPath := fs.PendingDirectory + "/" + username
 	approvedPath := fs.ApprovedDirectory + "/" + username
 
-	if fs.exists(pendingPath) != nil {
+	if _, ok := fs.Pending[username]; !ok {
 		return errors.New("no pending avatar")
 	}
 

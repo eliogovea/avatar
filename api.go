@@ -18,14 +18,32 @@ func (s *server) getDefaultAvatar() http.HandlerFunc {
 	}
 }
 
+func hasPrefix(p, s string) bool {
+	if len(s) < len(p) {
+		return false
+	}
+	for i := 0; i < len(p); i++ {
+		if s[i] != p[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // /api/approved/{id}
 func (s *server) getApprovedAvatar() http.HandlerFunc {
+	prefix := "/api/approved"
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "only get", http.StatusMethodNotAllowed)
 			// TODO
 			return
 		}
+		if !hasPrefix(prefix, r.URL.RequestURI()) {
+			http.Error(w, "bad request", http.StatusBadRequest)
+			return
+		}
+
 		username := r.URL.RequestURI()[len("/api/approved/"):]
 		path := s.Fs.getApproved(username)
 		file, err := os.Open(path)

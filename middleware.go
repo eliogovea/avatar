@@ -41,6 +41,7 @@ func (s *server) loggedOnly(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ok, username, isManager := s.isLogged(r)
 		if !ok {
+			log.Println("unauthorized request")
 			w.Header().Set("Location", s.LoginPath)
 			w.WriteHeader(http.StatusMovedPermanently)
 			return

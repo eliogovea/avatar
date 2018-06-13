@@ -66,9 +66,9 @@ func loadFromConfig(configPath string) (*server, error) {
 
 func (s *server) buildHandlers() error {
 	s.router.HandleFunc("/", s.rootHandler())
-	s.router.HandleFunc(s.LoginPath, s.notLoggedOnly(s.loginHandler()))
-	s.router.HandleFunc(s.LogoutPath, s.loggedOnly(s.logoutHandler()))
-	s.router.HandleFunc(s.PersonalPath, s.loggedOnly(s.personalHandler()))
+	s.router.HandleFunc("/login", s.notLoggedOnly(s.loginHandler()))
+	s.router.HandleFunc("/logout", s.loggedOnly(s.logoutHandler()))
+	s.router.HandleFunc("/personal", s.loggedOnly(s.personalHandler()))
 	s.router.HandleFunc("/api/approved/", s.getApprovedAvatar())
 	s.router.HandleFunc("/api/pending/", s.loggedOnly(s.getPendingAvatar()))
 	s.router.HandleFunc("/upload", s.loggedOnly(s.uploadHandler()))
