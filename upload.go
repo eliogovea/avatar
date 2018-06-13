@@ -8,8 +8,6 @@ import (
 func (s *server) uploadHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		log.Println("upload file")
-
 		if r.Method != http.MethodPost {
 			http.Error(w, "only post allowed", http.StatusMethodNotAllowed)
 			return
