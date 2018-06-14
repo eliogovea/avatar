@@ -16,13 +16,14 @@ type adminsDAO struct {
 	Collection string `json:"collection"`
 }
 
-func NewAdminsDAO(path string) (*adminsDAO, error) {
+func NewAdminsDAO(path string, session *mgo.Session) (*adminsDAO, error) {
 	dao := new(adminsDAO)
 	err := dao.ReadConfig(path)
 	if err != nil {
 		return dao, err
 	}
-	err = dao.Connect()
+	dao.C = session.DB(dao.Database).C(dao.Collection)
+	// err = dao.Connect()
 	return dao, err
 }
 
