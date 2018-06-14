@@ -32,7 +32,7 @@ func hasPrefix(p, s string) bool {
 
 // /api/approved/{id}
 func (s *server) getApprovedAvatar() http.HandlerFunc {
-	prefix := "/api/approved"
+	prefix := "/api/approved/"
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "only get", http.StatusMethodNotAllowed)
@@ -44,7 +44,7 @@ func (s *server) getApprovedAvatar() http.HandlerFunc {
 			return
 		}
 
-		username := r.URL.RequestURI()[len("/api/approved/"):]
+		username := r.URL.RequestURI()[len(prefix):]
 		path := s.Fs.getApproved(username)
 		file, err := os.Open(path)
 		if err != nil {
@@ -92,9 +92,9 @@ func (s *server) getPendingAvatar() http.HandlerFunc {
 
 // /api/admin/approve/{id}
 func (s *server) approvePending() http.HandlerFunc {
-	root := "/api/admin/approve/pending/"
+	prefix := "/api/admin/approve/pending/"
 	return func(w http.ResponseWriter, r *http.Request) {
-		username := r.URL.RequestURI()[len(root):]
+		username := r.URL.RequestURI()[len(prefix):]
 		err := s.Fs.approvePending(username)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
