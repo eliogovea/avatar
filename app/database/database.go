@@ -1,6 +1,6 @@
 package database
 
-type db struct {
-	admins  adminsDAO
-	avatars avatarsDAO
+type DB struct {
+	Admins  adminsDAO
+	Avatars avatarsDAO
 }

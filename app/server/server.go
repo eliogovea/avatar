@@ -1,4 +1,12 @@
 package server
 
-type server struct {
+import (
+	"net/http"
+
+	"github.com/eliogovea/avatar/app/database"
+)
+
+type Server struct {
+	db     *database.DB
+	router http.ServeMux
 }
