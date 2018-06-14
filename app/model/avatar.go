@@ -7,5 +7,5 @@ type Avatar struct {
 	Status     string        `json:"status" bson:"status"` // pending or approved
 	Username   string        `json:"username" bson:"username"`
 	ApprovedBy string        `json:"approved_by" bson:"approved_by"` // empty if status is  pending
-	File       []byte        `json`
+	File       string        `json:"file" bson:"file"`
 }
