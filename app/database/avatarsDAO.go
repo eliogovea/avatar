@@ -1,6 +1,7 @@
 package database
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 
@@ -16,11 +17,12 @@ type avatarsDAO struct {
 	Collection string `json:"collection"`
 }
 
-func (dao *adminsDAO) ReadConfig(path string) error {
+func (dao *avatarsDAO) ReadConfig(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
+	err = json.NewDecoder(file).Decode(dao)
 	return dao.Connect()
 }
 

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"encoding/json"
 	"os"
 
 	"github.com/eliogovea/avatar/app/model"
@@ -15,12 +16,22 @@ type adminsDAO struct {
 	Collection string `json:"collection"`
 }
 
+func NewAdminsDAO(path string) (*adminsDAO, error) {
+	dao := new(adminsDAO)
+	err := dao.ReadConfig(path)
+	if err != nil {
+		return dao, err
+	}
+	err = dao.Connect()
+	return dao, err
+}
+
 func (dao *adminsDAO) ReadConfig(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
-	return dao.Connect()
+	return json.NewDecoder(file).Decode(dao)
 }
 
 func (dao *adminsDAO) Connect() error {
@@ -38,7 +49,7 @@ func (dao *adminsDAO) FindAll() ([]model.Admin, error) {
 	return admins, err
 }
 
-func (dao *adminDAO) FindByUsername(username string) (model.Admin, error) {
+func (dao *adminsDAO) FindByUsername(username string) (model.Admin, error) {
 	var admin model.Admin
 	err := dao.C.Find(bson.M{"username": username}).One(&admin)
 	return admin, err
@@ -49,10 +60,10 @@ func (dao *adminsDAO) Insert(admin *model.Admin) error {
 }
 
 func (dao *adminsDAO) Remove(admin *model.Admin) error {
-	return dao.C.Remove(avatar)
+	return dao.C.Remove(admin)
 }
 
-func (dao *adminsDAO) Remove(username string) error {
+func (dao *adminsDAO) RemoveByUsername(username string) error {
 	admin, err := dao.FindByUsername(username)
 	if err != nil {
 		return err
