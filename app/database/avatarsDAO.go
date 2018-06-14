@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"os"
 
 	"github.com/eliogovea/avatar/app/model"
 	mgo "gopkg.in/mgo.v2"
@@ -13,6 +14,14 @@ type avatarsDAO struct {
 	Server     string `json:"server"`
 	Database   string `json:"database"`
 	Collection string `json:"collection"`
+}
+
+func (dao *adminsDAO) ReadConfig(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	return dao.Connect()
 }
 
 func (dao *avatarsDAO) Connect() error {
@@ -70,11 +79,11 @@ func (dao *avatarsDAO) Remove(avatar *model.Avatar) error {
 	return dao.C.Remove(avatar)
 }
 
-func (dao *avatarDAO) Update(avatar *model.Avatar) error {
+func (dao *avatarsDAO) Update(avatar *model.Avatar) error {
 	return dao.C.UpdateId(avatar.ID, &avatar)
 }
 
-func (dao *avatarDAO) Approve(avatar *model.Avatar) error {
+func (dao *avatarsDAO) Approve(avatar *model.Avatar) error {
 	if avatar.Status != "pending" {
 		return errors.New("incorrect")
 	}
