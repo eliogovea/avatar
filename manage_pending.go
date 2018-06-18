@@ -8,7 +8,8 @@ import (
 // /admin/pending
 func (s *server) managePending() http.HandlerFunc {
 	type file struct {
-		Name string
+		Name     string
+		Username string
 	}
 	type data struct {
 		NoPending bool
@@ -25,8 +26,10 @@ func (s *server) managePending() http.HandlerFunc {
 		Data.Files = make([]file, 0)
 		for key, _ := range s.Fs.Pending {
 			Data.Files = append(Data.Files, file{
-				Name: "/api/pending/" + key,
+				Name:     "/api/pending/" + key,
+				Username: key,
 			})
+			break // !!!
 		}
 
 		t.Execute(w, Data)

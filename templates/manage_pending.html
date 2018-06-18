@@ -34,11 +34,26 @@
         {{range .Files}}
         <div>
             <li>
-                <img src="{{.Name}}" width="320" height="320">
+            <img id="{{.Username}}" src="{{.Name}}" width="320" height="320">
             </li> 
+            <div>
+                <ul>
+                    <button onclick="accept({{.Username}})">Aceptar</button>
+                    <li><a href="javascript:void(0)" class="approve button positive">Aceptar</a></li>
+                    <li><a href="javascript:void(0)" class="deny button positive">Denegar</a></li>
+                </ul>
+            </div>
+            <b class="username">{{.Username}}</b>
         </div>
         {{end}}
     </div>
 </body>
+
+<script>
+function accept(id) {
+   document.getElemetById(id).src = "/static/approved.jpeg"
+    // TODO
+}
+</script>
 
 </html>
