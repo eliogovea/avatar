@@ -7,8 +7,12 @@ import (
 
 // /admin/pending
 func (s *server) managePending() http.HandlerFunc {
+	type file struct {
+		Name string
+	}
 	type data struct {
-		files []string
+		NoPending bool
+		Files     []file
 	}
 	t := template.Must(template.ParseFiles("./templates/manage_pending.html"))
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -17,7 +21,15 @@ func (s *server) managePending() http.HandlerFunc {
 			return
 		}
 
-		t.Execute(w, nil)
+		Data := new(data)
+		Data.Files = make([]file, 0)
+		for key, _ := range s.Fs.Pending {
+			Data.Files = append(Data.Files, file{
+				Name: "/api/pending/" + key,
+			})
+		}
+
+		t.Execute(w, Data)
 
 	}
 }

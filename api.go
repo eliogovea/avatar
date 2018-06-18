@@ -35,8 +35,7 @@ func (s *server) getApprovedAvatar() http.HandlerFunc {
 	prefix := "/api/approved"
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
-			http.Error(w, "only get", http.StatusMethodNotAllowed)
-			// TODO
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
 		if !hasPrefix(prefix, r.URL.RequestURI()) {
@@ -61,6 +60,10 @@ func (s *server) getApprovedAvatar() http.HandlerFunc {
 // /api/pending/{id}
 func (s *server) getPendingAvatar() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+
+		}
 		username := r.Context().Value("username").(string)
 		isManager := r.Context().Value("isManager").(bool)
 
@@ -104,27 +107,37 @@ func (s *server) approvePending() http.HandlerFunc {
 	}
 }
 
-// /api/admin/deny/pending/{id}
+// /api/pending/{id}
 func (s *server) denyPending() http.HandlerFunc {
 	root := "/api/admin/deny/pending/"
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			http.Error(w, "bad request", http.StatusMethodNotAllowed)
+			return
+		}
 		username := r.URL.RequestURI()[len(root):]
 		err := s.Fs.denyPending(username)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		w.WriteHeader(http.StatusOK)
 	}
 }
 
-// /api/admin/deny/approved/{id}
+// /api/approved/{id}
 func (s *server) denyApproved() http.HandlerFunc {
 	root := "/api/admin/deny/approved/"
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			http.Error(w, "bad request", http.StatusMethodNotAllowed)
+			return
+		}
 		username := r.URL.RequestURI()[len(root):]
 		err := s.Fs.denyApproved(username)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		w.WriteHeader(http.StatusOK)
 	}
