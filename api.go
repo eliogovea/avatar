@@ -30,9 +30,37 @@ func hasPrefix(p, s string) bool {
 	return true
 }
 
+func (s *server) APIApproved(method string) http.HandlerFunc {
+	switch method {
+	case http.MethodGet:
+		return s.getApproved()
+	case http.MethodPost:
+		// TODO
+	case http.MethodDelete:
+		return s.denyApproved()
+	default:
+		// TODO report error
+	}
+	return nil
+}
+
+func (s *server) APIPending(method string) http.HandlerFunc {
+	switch method {
+	case http.MethodGet:
+		return s.getPending()
+	case http.MethodPost:
+		// TODO
+	case http.MethodDelete:
+		return s.denyPending()
+	default:
+		// TODO
+	}
+	return nil
+}
+
 // /api/approved/{id}
-func (s *server) getApprovedAvatar() http.HandlerFunc {
-	prefix := "/api/approved"
+func (s *server) getApproved() http.HandlerFunc {
+	prefix := "/api/approved/"
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -58,7 +86,7 @@ func (s *server) getApprovedAvatar() http.HandlerFunc {
 }
 
 // /api/pending/{id}
-func (s *server) getPendingAvatar() http.HandlerFunc {
+func (s *server) getPending() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -93,28 +121,27 @@ func (s *server) getPendingAvatar() http.HandlerFunc {
 	}
 }
 
-// /api/admin/approve/{id}
-func (s *server) approvePending() http.HandlerFunc {
-	root := "/api/admin/approve/pending/"
+// /api/pending/{id}
+// method ???
+func (s *server) approve() http.HandlerFunc {
+	root := "/api/approve/"
 	return func(w http.ResponseWriter, r *http.Request) {
 		username := r.URL.RequestURI()[len(root):]
+		log.Println("approve pending", username)
 		err := s.Fs.approvePending(username)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		// TODO inform success
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
 // /api/pending/{id}
+// method delete
 func (s *server) denyPending() http.HandlerFunc {
-	root := "/api/admin/deny/pending/"
+	root := "/api/deny/pending/"
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			http.Error(w, "bad request", http.StatusMethodNotAllowed)
-			return
-		}
 		username := r.URL.RequestURI()[len(root):]
 		err := s.Fs.denyPending(username)
 		if err != nil {
@@ -126,8 +153,9 @@ func (s *server) denyPending() http.HandlerFunc {
 }
 
 // /api/approved/{id}
+// method delete
 func (s *server) denyApproved() http.HandlerFunc {
-	root := "/api/admin/deny/approved/"
+	root := "/api/deny/approved/"
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodDelete {
 			http.Error(w, "bad request", http.StatusMethodNotAllowed)

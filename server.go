@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -65,12 +66,22 @@ func loadFromConfig(configPath string) (*server, error) {
 }
 
 func (s *server) buildHandlers() error {
+
+	log.Println("building handlers")
+
 	s.router.HandleFunc("/", s.rootHandler())
 	s.router.HandleFunc("/login", s.notLoggedOnly(s.loginHandler()))
 	s.router.HandleFunc("/logout", s.loggedOnly(s.logoutHandler()))
 	s.router.HandleFunc("/personal", s.loggedOnly(s.personalHandler()))
-	s.router.HandleFunc("/api/approved/", s.getApprovedAvatar())
-	s.router.HandleFunc("/api/pending/", s.loggedOnly(s.getPendingAvatar()))
+
+	s.router.HandleFunc("/api/approved/", s.getApproved())
+	s.router.HandleFunc("/api/pending/", s.loggedOnly(s.getPending()))
+
+	s.router.HandleFunc("/api/approve/", s.approve())
+
+	s.router.HandleFunc("/api/deny/pending/", s.denyPending())
+	s.router.HandleFunc("/api/deny/approved/", s.denyApproved())
+
 	s.router.HandleFunc("/upload", s.loggedOnly(s.uploadHandler()))
 
 	s.router.HandleFunc("/admin/pending", s.managerOnly(s.managePending()))

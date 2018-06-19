@@ -17,7 +17,7 @@
                         <a href="/admin/approved">Aprobados</a>
                     </li>
                     <li>
-                        <a href="/personal">Perfil</a>
+                        <a href="/personal">Mi Perfil</a>
                     </li>
                 </ul>
                  <div class="pull-right">
@@ -38,9 +38,10 @@
             </li> 
             <div>
                 <ul>
-                    <button onclick="accept({{.Username}})">Aceptar</button>
-                    <li><a href="javascript:void(0)" class="approve button positive">Aceptar</a></li>
-                    <li><a href="javascript:void(0)" class="deny button positive">Denegar</a></li>
+                    <button class="positive" onclick="accept({{.Username}})">Aceptar</button>
+                </ul>
+                <ul>
+                    <button class="negative" onclick="deny({{.Username}})">Denegar</button>
                 </ul>
             </div>
             <b class="username">{{.Username}}</b>
@@ -50,10 +51,22 @@
 </body>
 
 <script>
-function accept(id) {
-   document.getElemetById(id).src = "/static/approved.jpeg"
+function accept(username) {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/api/approve/' + username, true);
+
+    request.onload = function() {
+        // TODO
+    }
+    request.send();
+    document.getElementById(username).src = "/static/img/approved.jpeg";
+}
+
+function deny(username) {
+    document.getElementById(username).src = "/static/img/denied.jpeg";
     // TODO
 }
+
 </script>
 
 </html>

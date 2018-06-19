@@ -124,9 +124,10 @@ func (fs *storage) approvePending(username string) error {
 
 	err := os.Rename(pendingPath, approvedPath)
 
-	if err != nil {
+	if err == nil {
 		fs.Approved[username] = true
 		delete(fs.Pending, username)
+		log.Println("deleted")
 	}
 
 	return err
@@ -134,7 +135,7 @@ func (fs *storage) approvePending(username string) error {
 
 func (fs *storage) denyPending(username string) error {
 	err := os.Remove(fs.PendingDirectory + "/" + username)
-	if err != nil {
+	if err == nil {
 		delete(fs.Pending, username)
 	}
 	return err
@@ -142,7 +143,7 @@ func (fs *storage) denyPending(username string) error {
 
 func (fs *storage) denyApproved(username string) error {
 	err := os.Remove(fs.PendingDirectory + "/" + username)
-	if err != nil {
+	if err == nil {
 		delete(fs.Approved, username)
 	}
 	return err
@@ -160,9 +161,8 @@ func (fs *storage) HasApproved(username string) bool {
 
 func (fs *storage) CreatePending(from io.Reader, username string) error {
 	err := fs.copyFile(from, fs.PendingDirectory+"/"+username)
-	if err != nil {
+	if err == nil {
 		fs.Pending[username] = true
-		log.Println("added pending", username)
 	}
 	return err
 }

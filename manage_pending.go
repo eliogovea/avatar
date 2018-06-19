@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 )
 
@@ -25,11 +26,11 @@ func (s *server) managePending() http.HandlerFunc {
 		Data := new(data)
 		Data.Files = make([]file, 0)
 		for key, _ := range s.Fs.Pending {
+			log.Println(key)
 			Data.Files = append(Data.Files, file{
 				Name:     "/api/pending/" + key,
 				Username: key,
 			})
-			break // !!!
 		}
 
 		t.Execute(w, Data)
