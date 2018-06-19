@@ -74,13 +74,14 @@ func (s *server) buildHandlers() error {
 	s.router.HandleFunc("/logout", s.loggedOnly(s.logoutHandler()))
 	s.router.HandleFunc("/personal", s.loggedOnly(s.personalHandler()))
 
+	// get
 	s.router.HandleFunc("/api/approved/", s.getApproved())
 	s.router.HandleFunc("/api/pending/", s.loggedOnly(s.getPending()))
 
-	s.router.HandleFunc("/api/approve/", s.approve())
-
-	s.router.HandleFunc("/api/deny/pending/", s.denyPending())
-	s.router.HandleFunc("/api/deny/approved/", s.denyApproved())
+	// functions
+	s.router.HandleFunc("/api/approve/", s.managerOnly(s.approve()))
+	s.router.HandleFunc("/api/deny/pending/", s.managerOnly(s.denyPending()))
+	s.router.HandleFunc("/api/deny/approved/", s.managerOnly(s.denyApproved()))
 
 	s.router.HandleFunc("/upload", s.loggedOnly(s.uploadHandler()))
 

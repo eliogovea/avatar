@@ -54,16 +54,29 @@
 function accept(username) {
     var request = new XMLHttpRequest();
     request.open('GET', '/api/approve/' + username, true);
-
     request.onload = function() {
-        // TODO
+        if (this.status == 200) {
+            document.getElementById(username).src = "/static/img/approved.jpeg";
+            
+        } else {
+            alert("!!! internal error !!!")
+        }
     }
     request.send();
-    document.getElementById(username).src = "/static/img/approved.jpeg";
 }
 
 function deny(username) {
-    document.getElementById(username).src = "/static/img/denied.jpeg";
+    var request = new XMLHttpRequest();
+    request.open('GET', '/api/deny/pending/' + username, true);
+    request.onload = function() {
+        if (this.status == 200) {
+            document.getElementById(username).src = "/static/img/denied.jpeg";
+            
+        } else {
+            alert("!!! internal error !!!")
+        }
+    }
+    request.send();
     // TODO
 }
 
