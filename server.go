@@ -86,6 +86,7 @@ func (s *server) buildHandlers() error {
 	s.router.HandleFunc("/upload", s.loggedOnly(s.uploadHandler()))
 
 	s.router.HandleFunc("/admin/pending", s.managerOnly(s.managePending()))
+	s.router.HandleFunc("/admin/approved", s.managerOnly(s.manageApproved()))
 
 	s.router.Handle(s.StaticFiles, http.StripPrefix(s.StaticFiles, http.FileServer(http.Dir("static"))))
 	return nil

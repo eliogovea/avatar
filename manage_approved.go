@@ -6,7 +6,7 @@ import (
 )
 
 // /admin/pending
-func (s *server) managePending() http.HandlerFunc {
+func (s *server) manageApproved() http.HandlerFunc {
 	type file struct {
 		Name     string
 		Username string
@@ -15,7 +15,7 @@ func (s *server) managePending() http.HandlerFunc {
 		NoPending bool
 		Files     []file
 	}
-	t := template.Must(template.ParseFiles("./templates/manage_pending.html"))
+	t := template.Must(template.ParseFiles("./templates/manage_approved.html"))
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "StatusMethodNotAllowed", http.StatusMethodNotAllowed)
@@ -24,9 +24,9 @@ func (s *server) managePending() http.HandlerFunc {
 
 		Data := new(data)
 		Data.Files = make([]file, 0)
-		for key, _ := range s.Fs.Pending {
+		for key, _ := range s.Fs.Approved {
 			Data.Files = append(Data.Files, file{
-				Name:     "/api/pending/" + key,
+				Name:     "/api/approved/" + key,
 				Username: key,
 			})
 		}

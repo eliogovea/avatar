@@ -142,7 +142,7 @@ func (fs *storage) denyPending(username string) error {
 }
 
 func (fs *storage) denyApproved(username string) error {
-	err := os.Remove(fs.PendingDirectory + "/" + username)
+	err := os.Remove(fs.ApprovedDirectory + "/" + username)
 	if err == nil {
 		delete(fs.Approved, username)
 	}

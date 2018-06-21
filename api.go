@@ -157,10 +157,6 @@ func (s *server) denyPending() http.HandlerFunc {
 func (s *server) denyApproved() http.HandlerFunc {
 	root := "/api/deny/approved/"
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			http.Error(w, "bad request", http.StatusMethodNotAllowed)
-			return
-		}
 		username := r.URL.RequestURI()[len(root):]
 		err := s.Fs.denyApproved(username)
 		if err != nil {

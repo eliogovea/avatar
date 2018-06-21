@@ -7,6 +7,7 @@ import (
 )
 
 type PersonalData struct {
+	Username          string
 	IsManager         bool
 	HasApprovedAvatar bool
 	ApprovedAvatar    string
@@ -31,6 +32,7 @@ func (s *server) personalHandler() http.HandlerFunc {
 			log.Println("!!! error personalHandler !!!")
 		}
 		data := &PersonalData{
+			Username:          username,
 			IsManager:         isManager,
 			HasApprovedAvatar: s.Fs.HasApproved(username),
 			ApprovedAvatar:    "/api/approved/" + username,

@@ -29,12 +29,17 @@
             </div>
         </div>
     </nav>
+    <b>{{.Username}}</b>
     <div class="container" id="avatars">
         <li>
             <img src="{{.ApprovedAvatar}}" width="320" height="320"/>
+            <b>Aprobado</b>
         </li>
         {{if .HasPendingAvatar}}
+        <li>
             <img src="{{.PendingAvatar}}" width="320" height="320">
+            <b>Pendiente</b>
+        </li>
         {{end}}
     </div>
 
