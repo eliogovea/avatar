@@ -69,7 +69,7 @@ func (fs *storage) loadAvatars() error {
 	return nil
 }
 
-func (fs *storage) copyFile(from io.Reader, path string) error {
+func (fs *storage) copyFile(from io.ReadSeeker, path string) error {
 	// TODO check if the path is valid
 
 	// TODO check if the file type is valid
@@ -84,7 +84,7 @@ func (fs *storage) copyFile(from io.Reader, path string) error {
 	contentType := http.DetectContentType(buffer)
 
 	ok := false
-	// TODO user a map
+	// TODO use a map
 	for _, v := range fs.AllowedTypes {
 		if v == contentType {
 			ok = true
@@ -159,7 +159,7 @@ func (fs *storage) HasApproved(username string) bool {
 	return ok
 }
 
-func (fs *storage) CreatePending(from io.Reader, username string) error {
+func (fs *storage) CreatePending(from io.ReadSeeker, username string) error {
 	err := fs.copyFile(from, fs.PendingDirectory+"/"+username)
 	if err == nil {
 		fs.Pending[username] = true
