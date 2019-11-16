@@ -1,5 +1,0 @@
-{
-    "server": "localhost",    
-    "database": "database",
-    "collection": "admins"
-}
